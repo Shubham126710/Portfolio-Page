@@ -8,35 +8,30 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onLogoClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [navBg, setNavBg] = useState('bg-pastel-peach'); // Default to Hero Yellow
+  const [navBg, setNavBg] = useState('bg-pastel-peach');
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
 
-      // Define sections and their corresponding navbar colors
       const sections = [
-        { id: 'hero', color: 'bg-pastel-peach' },    // Yellow
-        { id: 'work', color: 'bg-pastel-mint' },     // Green
-        { id: 'about', color: 'bg-pastel-lavender' }, // Orange
-        { id: 'contact', color: 'bg-pastel-lavender' } // Orange (matches footer base)
+        { id: 'hero', color: 'bg-pastel-peach' },
+        { id: 'work', color: 'bg-pastel-mint' },
+        { id: 'about', color: 'bg-pastel-lavender' },
+        { id: 'contact', color: 'bg-pastel-lavender' },
       ];
 
       const scrollY = window.scrollY;
-      const navHeightOffset = 100; // Trigger change slightly before section hits top
+      const offset = 100;
+      let newColor = 'bg-pastel-peach';
 
-      let newColor = 'bg-pastel-peach'; // Default fallback
-
-      // Iterate to find the last section that has been scrolled past
       for (const section of sections) {
-        const element = document.getElementById(section.id);
-        if (element) {
-          // If we have scrolled past the top of this section (minus offset)
-          if (element.offsetTop - navHeightOffset <= scrollY) {
-            newColor = section.color;
-          }
+        const el = document.getElementById(section.id);
+        if (el && el.offsetTop - offset <= scrollY) {
+          newColor = section.color;
         }
       }
+
       setNavBg(newColor);
     };
 
@@ -44,13 +39,9 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Prevent scrolling when menu is open
+  // Lock scroll when menu is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
   }, [isOpen]);
 
   const navLinks = [
@@ -68,85 +59,75 @@ const Navbar: React.FC<NavbarProps> = ({ onLogoClick }) => {
 
   const handleLinkClick = (href: string) => {
     setIsOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Determine the final class string.
-  // If at top (!scrolled), use transparent to show Hero bg.
-  // If scrolled, use the dynamic navBg + border.
-  const navbarClasses = scrolled && !isOpen 
-    ? `py-4 ${navBg} border-b-2 border-flat-black` 
-    : 'py-8 bg-transparent';
+  const navbarClasses =
+    scrolled && !isOpen
+      ? `py-4 ${navBg} border-b-2 border-flat-black`
+      : 'py-8 bg-transparent';
 
   return (
     <>
+      {/* Top Bar */}
       <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${navbarClasses}`}>
-        <div className="container mx-auto px-6 md:px-12 flex justify-between items-center relative z-50">
+        <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
+          
           {/* Logo */}
-          <a 
-            href="#" 
+          <a
+            href="#"
             onClick={handleLogoClick}
-            className={`text-2xl font-bold font-mono tracking-tighter hover:scale-105 transition-transform text-flat-black`}
+            className="text-2xl font-bold font-mono tracking-tighter text-flat-black hover:scale-105 transition-transform"
           >
             shubham.
           </a>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex gap-12 items-center">
-            {navLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href} 
-                className="text-lg font-medium hover:text-pop-coral transition-colors relative group text-flat-black"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pop-coral transition-all group-hover:w-full"></span>
-              </a>
-            ))}
-          </div>
-
-          {/* Mobile Toggle */}
-          <button 
-            className="md:hidden p-2 text-flat-black focus:outline-none"
+          {/* Hamburger (ALL screen sizes) */}
+          <button
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
+            className="p-2 text-flat-black focus:outline-none"
           >
             {isOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
       </nav>
 
-      {/* Full Screen Mobile Menu Overlay - Uses current navBg for consistency */}
-      <div 
-        className={`fixed inset-0 z-40 flex flex-col items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)] ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'} ${navBg}`}
+      {/* Fullscreen Menu */}
+      <div
+        className={`fixed inset-0 z-40 flex flex-col items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.87,0,0.13,1)]
+        ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'} ${navBg}`}
       >
         <div className="flex flex-col gap-8 text-center">
           {navLinks.map((link, index) => (
-            <a 
-              key={link.name} 
-              href={link.href} 
-              onClick={(e) => { e.preventDefault(); handleLinkClick(link.href); }}
-              className={`group relative text-5xl font-extrabold tracking-tighter text-flat-black transition-all duration-500 hover:text-pop-coral ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+            <a
+              key={link.name}
+              href={link.href}
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick(link.href);
+              }}
+              className={`text-5xl font-extrabold tracking-tighter text-flat-black hover:text-pop-coral transition-all duration-500
+              ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               {link.name}
-              <span className="block text-lg font-mono font-normal opacity-50 mt-2 group-hover:opacity-100 transition-opacity">
+              <span className="block text-lg font-mono opacity-50 mt-2">
                 {link.sub}
               </span>
             </a>
           ))}
         </div>
 
-        {/* Decorative Grid in Menu */}
-        <div className="absolute inset-0 pointer-events-none opacity-5" 
-           style={{
-             backgroundImage: 'radial-gradient(#1a1a1a 1px, transparent 1px)',
-             backgroundSize: '20px 20px'
-           }}>
-        </div>
+        {/* Subtle Grid */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-5"
+          style={{
+            backgroundImage: 'radial-gradient(#1a1a1a 1px, transparent 1px)',
+            backgroundSize: '20px 20px',
+          }}
+        />
       </div>
     </>
   );
