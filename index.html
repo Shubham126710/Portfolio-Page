@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Outfit', 'sans-serif'],
+              mono: ['Space Grotesk', 'monospace'],
+            },
+            colors: {
+              // REFINED PALETTE: Yellow -> Green -> Orange (Citrus/Fresh Theme)
+              'pastel-peach': '#FDE047',    // Vibrant Yellow (Hero)
+              'pop-coral': '#FF6B6B',       // Pop Coral (Accents/Footer)
+              'pastel-mint': '#81C784',     // Vibrant Green (Work) - Replaces Purple
+              'pop-teal': '#1a1a1a',        // Black for contrast
+              'pastel-lavender': '#FFB74D', // Vibrant Orange (About)
+              'pop-purple': '#1a1a1a',      // Black for contrast
+              'flat-black': '#1a1a1a',      // Primary Text
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+</head>
+  <body class="bg-pastel-peach text-flat-black">
+    <div id="root"></div>
+  </body>
+</html>
